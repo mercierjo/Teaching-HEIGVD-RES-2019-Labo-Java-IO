@@ -7,10 +7,8 @@ import ch.heigvd.res.labio.interfaces.IFileExplorer;
 import ch.heigvd.res.labio.interfaces.IFileVisitor;
 import ch.heigvd.res.labio.quotes.QuoteClient;
 import ch.heigvd.res.labio.quotes.Quote;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,8 +123,18 @@ public class Application implements IApplication {
    * @throws IOException 
    */
   void storeQuote(Quote quote, String filename) throws IOException {
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
     List<String> tags = quote.getTags();
+    String path = "";
+    for(String str : tags) {
+      path += "/" + str;
+    }
+    File quoteFile = new File(path + filename);
+    FileUtils.forceMkdir(quoteFile);
+    FileWriter writer = new FileWriter(quoteFile);
+
+    writer.write(quote.getQuote());
+    writer.flush();
+    writer.close();
   }
   
   /**
@@ -143,6 +151,7 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
+
       }
     });
   }
