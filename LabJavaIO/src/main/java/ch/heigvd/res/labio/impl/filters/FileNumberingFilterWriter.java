@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
+  private int counterLine = 1;
+  private String result = counterLine + "\t";
+  private boolean lineReturnExist = false;
 
   public FileNumberingFilterWriter(Writer out) {
     super(out);
@@ -25,17 +28,39 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    write(str.toCharArray(), off, len);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < len + off; ++i) {
+      if(cbuf[i] == '\r')
+        lineReturnExist = true;
+      else {
+        if(lineReturnExist && cbuf[i] == '\n') {
+          result += "\r\n" + Integer.toString(++counterLine) + '\t';
+          lineReturnExist = false;
+        }
+        else if(lineReturnExist && cbuf[i] != '\n') {
+          result += "\r" + Integer.toString(++counterLine) + '\t';
+          lineReturnExist = false;
+        }
+        else if(!lineReturnExist && cbuf[i] == '\n') {
+          result += '\n' + Integer.toString(++counterLine) + '\t';
+        }
+
+        if(cbuf[i] != '\r' && cbuf[i] != '\n'){
+          result += cbuf[i];
+        }
+      }
+    }
+    super.write(result, 0, result.length());
+    result = "";
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    write(Character.toString((char)c));
   }
-
 }
