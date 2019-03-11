@@ -146,6 +146,7 @@ public class Application implements IApplication {
    */
   void printFileNames(final Writer writer) {
     IFileExplorer explorer = new DFSFileExplorer();
+    PrintWriter pathToFile = new PrintWriter(writer);
     explorer.explore(new File(WORKSPACE_DIRECTORY), new IFileVisitor() {
       @Override
       public void visit(File file) {
@@ -154,7 +155,6 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
-        PrintWriter pathToFile = new PrintWriter(writer);
         pathToFile.println(file.getPath());
       }
     });
