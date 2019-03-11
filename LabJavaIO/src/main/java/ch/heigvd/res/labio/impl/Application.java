@@ -12,6 +12,8 @@ import java.io.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -124,14 +126,15 @@ public class Application implements IApplication {
    */
   void storeQuote(Quote quote, String filename) throws IOException {
     List<String> tags = quote.getTags();
-    String path = "";
+    String path = WORKSPACE_DIRECTORY;
     for(String str : tags) {
       path += "/" + str;
     }
-    File quoteFile = new File(path + filename);
-    FileUtils.forceMkdir(quoteFile);
-    FileWriter writer = new FileWriter(quoteFile);
 
+    File quoteFile = new File(path);
+    quoteFile.mkdirs();
+    FileOutputStream out = new FileOutputStream(path + "/" + filename);
+    OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
     writer.write(quote.getQuote());
     writer.flush();
     writer.close();
@@ -151,14 +154,15 @@ public class Application implements IApplication {
          * of the the IFileVisitor interface inline. You just have to add the body of the visit method, which should
          * be pretty easy (we want to write the filename, including the path, to the writer passed in argument).
          */
-        //writer.write(file.getPath());
+        PrintWriter pathToFile = new PrintWriter(writer);
+        pathToFile.println(file.getPath());
       }
     });
   }
 
-  @Override
-  public void processQuoteFiles() throws IOException {
-    IFileExplorer explorer = new DFSFileExplorer();
-    explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());    
+    @Override
+    public void processQuoteFiles () throws IOException {
+      IFileExplorer explorer = new DFSFileExplorer();
+      explorer.explore(new File(WORKSPACE_DIRECTORY), new CompleteFileTransformer());
+    }
   }
-}

@@ -22,7 +22,6 @@ public class DFSFileExplorer implements IFileExplorer {
       File files[] = rootDirectory.listFiles();
       Arrays.sort(files);
       for (File f : files) {
-        if (f.isDirectory())
           explore(f, vistor);
       }
     }
