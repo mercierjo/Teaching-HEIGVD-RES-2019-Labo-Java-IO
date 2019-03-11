@@ -31,9 +31,8 @@ public class UpperCaseFilterWriter extends FilterWriter {
 
   @Override
   public void write(int c) throws IOException {
-    if(Character.isLowerCase(c));
+    if(Character.isLowerCase(c))
       c = Character.toUpperCase(c);
-
     super.write(c);
   }
 
